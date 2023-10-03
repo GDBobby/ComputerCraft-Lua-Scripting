@@ -10,6 +10,11 @@ function ForceUp()
         turtle.digUp()
     end
 end
+function ForceDown()
+    while not turtle.down() do
+        turtle.digDown()
+    end
+end
 
 function digLine()
     for i = 0, 15 do
@@ -42,20 +47,39 @@ function digLevel()
     end
 end
 
-function digRoom()
-    for i = 0, 7 do
-        digLevel()
-        turtle.turnLeft()
-        for j = 0, 15 do
-            ForceMove()
-        end
-        turtle.turnRight()
-        ForceUp()
-        ForceUp()
-    end
-    for i = 0, 15 do
-        turtle.down()
+function GoToBottom(startingHeight)
+    for i = -55, startingHeight do
+        ForceDown()
     end
 end
 
-digRoom()
+function ReturnToPosition(startingHeight, currentHeight)
+    for i = startingHeight, currentHeight do
+        ForceDown()
+    end
+end
+function GoNextLevel()
+    turtle.turnLeft()
+    for j = 0, 15 do
+        ForceMove()
+    end
+    turtle.turnRight()
+    ForceUp()
+    ForceUp()
+end
+
+function ChunkClear(startingHeight, clearHeight)
+    GoToBottom(startingHeight)
+
+    local heightDistance = clearHeight + 55
+    heightDistance = heightDistance / 2
+
+    for i = 0, heightDistance do
+        digLevel()
+        GoNextLevel()
+    end
+
+    ReturnToPosition(startingHeight, clearHeight)
+end
+
+ChunkClear(11, 100)
